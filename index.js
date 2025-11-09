@@ -1,13 +1,14 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+require('dotenv').config();
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT ;
 
 app.use(cors());
 app.use(express.json());
 
-const uri = process.env.MONGO_URI;
+const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.vwvkzn8.mongodb.net/?appName=Cluster0`;
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -25,6 +26,49 @@ async function run () {
     try{
         await client.connect();
 
+        const db = client.db('car_db');
+        const carCollection = db.collection('cars');
+
+        app.get('/cars', async(req, res)=>{
+          const cursor = carCollection.find();
+          const result = await cursor.toArray();
+          res.send(result)
+        })
+
+        // add cars
+        app.post('/cars' , async(req,res)=>{
+          const newCar = req.body;
+          const result = await carCollection.insertOne(newCar);
+          res.send(result)
+        });
+
+        // /*updatedCar*/
+        app.patch('/cars/:id', async(req,res)=>{
+          const id = req.params.id;
+          const updatedCar = req.body;
+          const query ={_id: new ObjectId(id)};
+          const update = {
+            $set: 
+            {
+              carName: updatedCar.carName,
+              category: updatedCar.category,
+              description: updatedCar.description,
+              rentPrice: updatedCar.rentPrice,
+              location: updatedCar.location,
+              imageUrl: updatedCar.imageUrl,
+            }
+          };
+          const result = await carCollection.updateOne(query, update);
+          res.send(result)
+        })
+
+        // delete car
+        app.delete('/cars/:id' , async(req, res)=>{
+          const id = req.params.id;
+          const query ={_id: new ObjectId(id)};
+          const result = await carCollection.deleteOne(query);
+          res.send(result)
+        })
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment.");
