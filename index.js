@@ -3,7 +3,7 @@ const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const app = express();
-const port = process.env.PORT ;
+const port = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(express.json());
@@ -76,15 +76,16 @@ async function run () {
           const updatedCar = req.body;
           const query ={_id: new ObjectId(id)};
           const update = {
-            $set: 
-            {
-              carName: updatedCar.carName,
-              category: updatedCar.category,
-              description: updatedCar.description,
-              rentPrice: updatedCar.rentPrice,
-              location: updatedCar.location,
-              imageUrl: updatedCar.imageUrl,
-            }
+            $set: updatedCar
+            // {
+            //   carName: updatedCar.carName,
+            //   category: updatedCar.category,
+            //   description: updatedCar.description,
+            //   rentPrice: updatedCar.rentPrice,
+            //   location: updatedCar.location,
+            //   imageUrl: updatedCar.imageUrl,
+            //   availability: updatedCar.availability
+            // }
           };
           const result = await carCollection.updateOne(query, update);
           res.send(result)
