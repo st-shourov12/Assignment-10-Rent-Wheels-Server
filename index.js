@@ -28,9 +28,29 @@ async function run () {
 
         const db = client.db('car_db');
         const carCollection = db.collection('cars');
+        const userCollection = db.collection('users')
 
+
+        app.get('/latestCars', async(req, res)=>{
+          const cursor = carCollection.find().sort({ _id: -1 }).limit(6);
+          const result = await cursor.toArray();
+          res.send(result)
+        });
+
+        // app.get('/cars', async(req, res)=>{
+        //   const cursor = carCollection.find();
+        //   const result = await cursor.toArray();
+        //   res.send(result)
+        // })
         app.get('/cars', async(req, res)=>{
-          const cursor = carCollection.find();
+
+          const email = req.query.email;
+          console.log(email);
+          const query = {};
+          if (email) {
+            query.providerEmail = email ;
+          }
+          const cursor = carCollection.find(query);
           const result = await cursor.toArray();
           res.send(result)
         })
@@ -76,7 +96,28 @@ async function run () {
           const query ={_id: new ObjectId(id)};
           const result = await carCollection.deleteOne(query);
           res.send(result)
-        })
+        });
+
+        app.post('/users' , async(req, res)=>{
+          const newUser = req.body;
+
+          const email = req.body.email;
+          const query ={
+            email: email
+          };
+          const existingUser = await userCollection.findOne(query);
+
+          if (existingUser) {
+            res.send({message: 'User already exist'})
+          }else{
+            const result = await userCollection.insertOne(newUser);
+            res.send(result)
+            
+          }
+
+
+          
+        } )
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment.");
