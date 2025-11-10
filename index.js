@@ -28,7 +28,8 @@ async function run () {
 
         const db = client.db('car_db');
         const carCollection = db.collection('cars');
-        const userCollection = db.collection('users')
+        const userCollection = db.collection('users');
+        const userCars = db.collection('myCars');
 
 
         app.get('/latestCars', async(req, res)=>{
@@ -37,11 +38,10 @@ async function run () {
           res.send(result)
         });
 
-        // app.get('/cars', async(req, res)=>{
-        //   const cursor = carCollection.find();
-        //   const result = await cursor.toArray();
-        //   res.send(result)
-        // })
+        
+
+        
+
         app.get('/cars', async(req, res)=>{
 
           const email = req.query.email;
@@ -57,7 +57,7 @@ async function run () {
 
         // add cars
         app.post('/cars' , async(req,res)=>{
-          const newCar = req.body;
+          const newCar = req.body.newCar;
           const result = await carCollection.insertOne(newCar);
           res.send(result)
         });
@@ -116,9 +116,25 @@ async function run () {
             
           }
 
+          
+
 
           
         } )
+
+        // myCrslisting
+
+          app.get('/myCars', async(req, res)=>{
+            const cursor = userCars.find();
+            const result = await cursor.toArray();
+            res.send(result)
+          })
+
+          app.post('/myCars' , async(req,res)=>{
+            const newCar = req.body;
+            const result = await userCars.insertOne(newCar);
+            res.send(result)
+          });
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment.");
