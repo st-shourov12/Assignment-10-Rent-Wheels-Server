@@ -73,7 +73,7 @@ async function run () {
         // /*updatedCar*/
         app.patch('/cars/:id', async(req,res)=>{
           const id = req.params.id;
-          const updatedCar = req.body;
+          const updatedCar = req.body.updatedData || req.body ;
           const query ={_id: new ObjectId(id)};
           const update = {
             $set: updatedCar
@@ -122,7 +122,7 @@ async function run () {
           
         } )
 
-        // myCrslisting
+        // myCarslisting
 
           app.get('/myCars', async(req, res)=>{
             const cursor = userCars.find();
@@ -131,7 +131,7 @@ async function run () {
           })
 
           app.post('/myCars' , async(req,res)=>{
-            const newCar = req.body;
+            const newCar = req.body.newCar;
             const result = await userCars.insertOne(newCar);
             res.send(result)
           });
