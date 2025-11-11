@@ -29,7 +29,7 @@ async function run () {
         const db = client.db('car_db');
         const carCollection = db.collection('cars');
         const userCollection = db.collection('users');
-        const userCars = db.collection('myCars');
+        const userCarBook = db.collection('myCarBoking');
 
 
         app.get('/latestCars', async(req, res)=>{
@@ -125,16 +125,23 @@ async function run () {
         // myCarslisting
 
           app.get('/myCars', async(req, res)=>{
-            const cursor = userCars.find();
+            const cursor = userCarBook.find();
             const result = await cursor.toArray();
             res.send(result)
           })
 
           app.post('/myCars' , async(req,res)=>{
-            const newCar = req.body.newCar;
-            const result = await userCars.insertOne(newCar);
+            const newCar = req.body.myCarBook || req.body;
+            const result = await userCarBook.insertOne(newCar);
             res.send(result)
           });
+
+          app.delete('/myCars/:id' , async(req, res)=>{
+          const id = req.params.id;
+          const query ={_id: new ObjectId(id)};
+          const result = await userCarBook.deleteOne(query);
+          res.send(result)
+        });
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment.");
