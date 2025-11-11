@@ -141,7 +141,27 @@ async function run () {
           const query ={_id: new ObjectId(id)};
           const result = await userCarBook.deleteOne(query);
           res.send(result)
-        });
+          });
+
+          app.patch('/myCars/:id', async(req,res)=>{
+          const id = req.params.id;
+          const updatedCar = req.body.updatedData || req.body ;
+          const query ={_id: new ObjectId(id)};
+          const update = {
+            $set: updatedCar
+            // {
+            //   carName: updatedCar.carName,
+            //   category: updatedCar.category,
+            //   description: updatedCar.description,
+            //   rentPrice: updatedCar.rentPrice,
+            //   location: updatedCar.location,
+            //   imageUrl: updatedCar.imageUrl,
+            //   availability: updatedCar.availability
+            // }
+          };
+          const result = await userCarBook.updateOne(query, update);
+          res.send(result)
+        })
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment.");
