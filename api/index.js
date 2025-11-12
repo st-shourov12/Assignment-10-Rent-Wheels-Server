@@ -74,6 +74,7 @@ async function run () {
         app.patch('/cars/:id', async(req,res)=>{
           const id = req.params.id;
           const updatedCar = req.body.updatedData || req.body ;
+          delete updatedCar._id;
           const query ={_id: new ObjectId(id)};
           const update = {
             $set: updatedCar
@@ -117,10 +118,30 @@ async function run () {
           }
 
           
+          
 
 
           
         } )
+
+        app.patch('/users/:id', async(req,res)=>{
+          const id = req.params.id;
+          const updateUser = req.body.updatedData || req.body ;
+          delete updateUser._id;
+          const query ={_id: new ObjectId(id)};
+          const update = {
+              $set: updateUser
+          };
+          const result = await userCollection.updateOne(query, update);
+          res.send(result);
+        })
+          
+          app.get('/users', async(req, res)=>{
+            const cursor = userCollection.find();
+            const result = await cursor.toArray();
+            res.send(result)
+          })
+
 
         // myCarslisting
 
@@ -146,24 +167,16 @@ async function run () {
           app.patch('/myCars/:id', async(req,res)=>{
           const id = req.params.id;
           const updatedCar = req.body.updatedData || req.body ;
+          delete updatedCar._id;
           const query ={_id: new ObjectId(id)};
           const update = {
             $set: updatedCar
-            // {
-            //   carName: updatedCar.carName,
-            //   category: updatedCar.category,
-            //   description: updatedCar.description,
-            //   rentPrice: updatedCar.rentPrice,
-            //   location: updatedCar.location,
-            //   imageUrl: updatedCar.imageUrl,
-            //   availability: updatedCar.availability
-            // }
           };
           const result = await userCarBook.updateOne(query, update);
           res.send(result)
         })
 
-        await client.db("admin").command({ ping: 1 });
+        // await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment.");
 
 
@@ -175,9 +188,13 @@ async function run () {
 }
 run().catch(console.dir);
 
-app.listen(port , ()=>{
-    console.log(`Car server running on ${port}`);
-})
+
+module.exports = app;
+
+
+// app.listen(port , ()=>{
+//     console.log(`Car server running on ${port}`);
+// })
 
 
 
