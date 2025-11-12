@@ -44,16 +44,22 @@ async function run () {
 
         app.get('/cars', async(req, res)=>{
 
-          const email = req.query.email;
-          console.log(email);
-          const query = {};
-          if (email) {
-            query.providerEmail = email ;
-          }
-          const cursor = carCollection.find(query);
-          const result = await cursor.toArray();
-          res.send(result)
+          const cursor = carCollection.find();
+            const result = await cursor.toArray();
+            res.send(result)
         })
+        // app.get('/cars', async(req, res)=>{
+
+        //   const email = req.query.email;
+        //   console.log(email);
+        //   const query = {};
+        //   if (email) {
+        //     query.providerEmail = email ;
+        //   }
+        //   const cursor = carCollection.find(query);
+        //   const result = await cursor.toArray();
+        //   res.send(result)
+        // })
 
         // add cars
         app.post('/cars' , async(req,res)=>{
@@ -177,7 +183,7 @@ async function run () {
         })
 
         // await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment.");
+        // console.log("Pinged your deployment.");
 
 
 
@@ -189,12 +195,13 @@ async function run () {
 run().catch(console.dir);
 
 
-module.exports = app;
 
 
-// app.listen(port , ()=>{
-//     console.log(`Car server running on ${port}`);
-// })
+
+app.listen(port , ()=>{
+    console.log(`Car server running on ${port}`);
+})
+
 
 
 
