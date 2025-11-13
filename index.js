@@ -24,7 +24,7 @@ app.get('/' , async(req, res) =>{
 
 async function run () {
     try{
-        await client.connect();
+        // await client.connect();
 
         const db = client.db('car_db');
         const carCollection = db.collection('cars');
@@ -48,6 +48,8 @@ async function run () {
             const result = await cursor.toArray();
             res.send(result)
         })
+
+        
         // app.get('/cars', async(req, res)=>{
 
         //   const email = req.query.email;
@@ -173,7 +175,7 @@ async function run () {
           app.patch('/myCars/:id', async(req,res)=>{
           const id = req.params.id;
           const updatedCar = req.body.updatedData || req.body ;
-          delete updatedCar._id;
+          // delete updatedCar._id;
           const query ={_id: new ObjectId(id)};
           const update = {
             $set: updatedCar
