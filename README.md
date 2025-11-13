@@ -33,7 +33,7 @@ Car providers can list vehicles, manage bookings, and update car availability in
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** React, Tailwind CSS, DaisyUI, React Router, React Icons, Axios , React Toastify , Swiper
+- **Frontend:** React, Tailwind CSS, DaisyUI, React Router, React Icons, Axios , React Toastify , Swiper , React Tooltip , Lottie React
 - **Backend:** Node.js, Express.js, MongoDB , Dotenv , Cors
 - **Authentication:** Firebase  
 - **Deployment:** Vercel (Server) / Netlify (Client)
